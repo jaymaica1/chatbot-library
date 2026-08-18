@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from .services.gemini_service import (
     interpretar_pergunta,
     buscar_livros,
+    gerar_mensagem,
 )
 
 
@@ -46,16 +47,10 @@ class ChatView(APIView):
             ]
 
             # 4. A resposta textual agora é criada pelo Django
-            if livros_data:
-                resposta = (
-                    "Encontrei algumas opções que "
-                    "podem interessar a você:"
-                )
-            else:
-                resposta = (
-                    "Não encontrei livros que correspondam "
-                    "aos critérios informados."
-                )
+            resposta = gerar_mensagem(
+                filtros,
+                len(livros_data)
+            )
 
             return Response({
                 "message": resposta,

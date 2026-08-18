@@ -136,3 +136,30 @@ def buscar_livros(filtros):
         )
 
     return queryset.distinct()
+
+def gerar_mensagem(filtros, quantidade):
+    if quantidade == 0:
+        return "Não encontrei livros que correspondam à sua busca."
+
+    if filtros.autor:
+        return f"Encontrei estes livros de {filtros.autor}:"
+
+    if filtros.categoria:
+        return f"Encontrei estes livros da categoria {filtros.categoria}:"
+
+    if filtros.preco_max is not None:
+        return (
+            f"Encontrei estes livros por até "
+            f"R$ {filtros.preco_max:.2f}:"
+        )
+
+    if filtros.preco_min is not None:
+        return (
+            f"Encontrei estes livros a partir de "
+            f"R$ {filtros.preco_min:.2f}:"
+        )
+
+    if filtros.somente_estoque:
+        return "Encontrei estes livros disponíveis em estoque:"
+
+    return "Encontrei estas opções no nosso catálogo:"
