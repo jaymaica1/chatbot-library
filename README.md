@@ -1,9 +1,6 @@
 # chatbot-library
 Chatbot para livraria
 ``` bash
-git clone git@github.com:jaymaica1/chatbot-library.git
-
-cd chatbot-library
 
 docker compose up -d
 
@@ -20,4 +17,8 @@ python manage.py migrate
 python manage.py seed_books
 
 python manage.py runserver
+```
+For frontend:
+``` bash
+npm start
 ```
