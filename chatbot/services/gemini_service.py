@@ -3,9 +3,11 @@ from google.genai import types
 from pydantic import BaseModel
 from typing import Optional
 from books.models import Livro
+from decouple import config
 
-client = genai.Client()
-
+client = genai.Client(
+    api_key=config("GEMINI_API_KEY")
+)
 
 class BuscaLivros(BaseModel):
     busca: Optional[str] = None
