@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:16
+    container_name: livraria_postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: livraria_db
+      POSTGRES_USER: livraria_user
+      POSTGRES_PASSWORD: 
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
