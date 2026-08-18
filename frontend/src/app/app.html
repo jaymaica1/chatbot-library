@@ -2,35 +2,80 @@
 
   <header class="chat-header">
     <div>
-      <h1>Livraria AI</h1>
+      <h1>Livraria</h1>
       <span>Assistente virtual</span>
     </div>
   </header>
 
-  <main class="messages">
 
-    @for (message of messages; track $index) {
+  <main class="chat-messages">
+
+    @for (msg of messages; track $index) {
 
       <div
-        class="message"
-        [class.user]="message.sender === 'user'"
-        [class.assistant]="message.sender === 'assistant'"
+        class="message-row"
+        [class.user-row]="msg.type === 'user'"
+        [class.bot-row]="msg.type === 'bot'"
       >
 
-        <div class="message-bubble">
-          {{ message.text }}
+        <div class="message">
+
+          <p>{{ msg.text }}</p>
+
+
+          @if (msg.books && msg.books.length > 0) {
+
+            <div class="books-list">
+
+              @for (book of msg.books; track book.title) {
+
+                <article class="book-card">
+
+                  <div class="book-info">
+
+                    <h2>{{ book.title }}</h2>
+
+                    <p class="author">
+                      {{ book.author }}
+                    </p>
+
+                    <span class="category">
+                      {{ book.category }}
+                    </span>
+
+                    @if (book.description) {
+                      <p class="description">
+                        {{ book.description }}
+                      </p>
+                    }
+
+                  </div>
+
+                  <div class="book-price">
+                    R$ {{ book.price }}
+                  </div>
+
+                </article>
+
+              }
+
+            </div>
+
+          }
+
         </div>
 
       </div>
 
     }
 
+
     @if (loading) {
 
-      <div class="message assistant">
+      <div class="message-row bot-row">
 
-        <div class="message-bubble">
-          Pensando...
+        <div class="message loading">
+          Consultando nosso catálogo...
         </div>
 
       </div>
@@ -39,6 +84,7 @@
 
   </main>
 
+
   <footer class="chat-input">
 
     <input
@@ -46,14 +92,15 @@
       [(ngModel)]="message"
       (keyup.enter)="sendMessage()"
       placeholder="Digite sua pergunta..."
+      [disabled]="loading"
     />
 
     <button
       type="button"
       (click)="sendMessage()"
-      [disabled]="loading"
+      [disabled]="loading || !message.trim()"
     >
-      ➤
+      Enviar
     </button>
 
   </footer>
