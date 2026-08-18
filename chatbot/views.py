@@ -5,7 +5,6 @@ from rest_framework.views import APIView
 from .services.gemini_service import (
     interpretar_pergunta,
     buscar_livros,
-    gerar_resposta,
 )
 
 
@@ -25,17 +24,42 @@ class ChatView(APIView):
 
         try:
 
+            # 1. Gemini interpreta a pergunta
             filtros = interpretar_pergunta(mensagem)
 
+            # 2. Django consulta o PostgreSQL
             livros = buscar_livros(filtros)
 
-            resposta = gerar_resposta(
-                mensagem,
-                livros
-            )
+            # 3. Django prepara os dados para o Angular
+            livros_data = [
+                {
+                    "title": livro.titulo,
+                    "author": ", ".join(
+                        autor.nome
+                        for autor in livro.autores.all()
+                    ),
+                    "category": livro.categoria.nome,
+                    "price": str(livro.preco),
+                    "description": livro.descricao,
+                }
+                for livro in livros
+            ]
+
+            # 4. A resposta textual agora é criada pelo Django
+            if livros_data:
+                resposta = (
+                    "Encontrei algumas opções que "
+                    "podem interessar a você:"
+                )
+            else:
+                resposta = (
+                    "Não encontrei livros que correspondam "
+                    "aos critérios informados."
+                )
 
             return Response({
-                "message": resposta
+                "message": resposta,
+                "books": livros_data
             })
 
         except Exception as e:
